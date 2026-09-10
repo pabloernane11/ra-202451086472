@@ -27,13 +27,11 @@ Obs. da wiki: "usar POST porque GET não estava funcionando".
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
-
-   Verbo HTTP incorreto, o uso de POST para uma operação de leitura/consulta. Viola a semântica HTTP e perde os recursos nativos de cacheabilidade, idempotência e segurança que o método GET oferece.
+   - Verbo HTTP incorreto, o uso de POST para uma operação de leitura/consulta. Viola a semântica HTTP e perde os recursos nativos de cacheabilidade, idempotência e segurança que o método GET oferece.
 
 2. Seu redesenho (método + rota + status codes):
-
-   método + rota: GET /api/v1/alunos?page=1&size=10
-   status codes: 200 OK (com metadados de paginação) ou 400 Bad Request (para parâmetros inválidos)
+   - Método + rota: GET /api/v1/alunos?page=1&size=10
+   - Status codes: 200 OK (com metadados de paginação) ou 400 Bad Request (para parâmetros inválidos)
 
 ## ENDPOINT 02 — GET /deletarAluno?id=7
 
@@ -47,15 +45,18 @@ Obs. da wiki: "dá pra deletar pelo navegador, bem prático".
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
+   - Verbo HTTP incorreto, o uso de GET para uma operação de exclusão. Viola a semântica HTTP e perde os recursos nativos de cacheabilidade, idempotência e segurança que o método DELETE oferece.
 
-   Verbo HTTP incorreto, o uso de GET para uma operação de exclusão. Viola a semântica HTTP e perde os recursos nativos de cacheabilidade, idempotência e segurança que o método DELETE oferece.
-   Uso de /deletarAluno. A ação de exclusão deve ser o método DELETE.
-   O ID do aluno deve fazer parte do caminho e não em parâmetro de busca.
-   Resposta 200 OK mesmo se o aluno não existir, o correto seria retornar 404 Not Found.
+   - Uso de /deletarAluno. A ação de exclusão deve ser o método DELETE.
+
+   - O ID do aluno deve fazer parte do caminho e não em parâmetro de busca.
+
+   - Resposta 200 OK mesmo se o aluno não existir, o correto seria retornar 404 Not Found.
 
 2. Seu redesenho (método + rota + status codes):
-   Método + Rota: DELETE /api/v1/alunos/7
-   Status Codes: 204 No Content (se deletado com sucesso), 404 Not Found (se o aluno não existir)
+   - Método + Rota: DELETE /api/v1/alunos/7
+
+   - Status Codes: 204 No Content (se deletado com sucesso), 404 Not Found (se o aluno não existir)
 
 ## ENDPOINT 03 — POST /api/alunos (criação)
 
@@ -69,16 +70,16 @@ O app precisa buscar a lista inteira de novo para descobrir o ID gerado.
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
+   - Status code incorreto, retornando 200 OK em vez de 201 Created para a criação do recurso.
 
-   Status code incorreto, retornando 200 OK em vez de 201 Created para a criação do recurso.
-   Não retorna o ID do recurso criado, obrigando o cliente a fazer uma nova requisição para obter essa informação.
-   Falta de versionamento, não contém /v1/ na rota.
+   - Não retorna o ID do recurso criado, obrigando o cliente a fazer uma nova requisição para obter essa informação.
+
+   - Falta de versionamento, não contém /v1/ na rota.
 
 2. Seu redesenho (método + rota + status codes):
-
-   Método + Rota: POST /api/v1/alunos
-   Status Codes: 201 Created com cabeçalho Location apontando para o novo recurso (/api/v1/alunos/{id}) e corpo JSON contendo o ID do aluno criado.
-   400 Bad Request caso os dados obrigatórios estejam faltando ou inválidos.
+   - Método + Rota: POST /api/v1/alunos
+   - Status Codes: 201 Created com cabeçalho Location apontando para o novo recurso (/api/v1/alunos/{id}) e corpo JSON contendo o ID do aluno criado.
+   - 400 Bad Request caso os dados obrigatórios estejam faltando ou inválidos.
 
 ## ENDPOINT 04 — GET /escolas/1/turmas/3/alunos/25/matriculas/88/disciplinas/12
 
@@ -92,17 +93,17 @@ Resposta: 200 OK + JSON da disciplina.
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
-
-   Rota com 5 níveis hierárquicos. Em REST recomenda-se no máximo 2.
-   Alto acoplamento, exigindo que o cliente conheça 5 IDs diferentes para acessar um recurso específico.
-   Falta de versionamento, não contém /v1/ na rota.
+   - Rota com 5 níveis hierárquicos. Em REST recomenda-se no máximo 2.
+   - Alto acoplamento, exigindo que o cliente conheça 5 IDs diferentes para acessar um recurso específico.
+   - Falta de versionamento, não contém /v1/ na rota.
 
 2. Seu redesenho (método + rota + status codes):
+   - Método + Rota:
 
-   Método + Rota:
-   - GET /api/v1/disciplinas/12 - Se a disciplina tiver rota direta
-   - GET /api/v1/matriculas/88/disciplinas/12 - Se a disciplina estiver aninhada em até 2 níveis
-     Status Codes: 200 OK com o JSON da disciplina, 404 Not Found caso algum dos IDs não exista.
+   GET /api/v1/disciplinas/12 - Se a disciplina tiver rota direta
+
+   GET /api/v1/matriculas/88/disciplinas/12 - Se a disciplina estiver aninhada em até 2 níveis
+   - Status Codes: 200 OK com o JSON da disciplina, 404 Not Found caso algum dos IDs não exista.
 
 ## ENDPOINT 05 — GET /api/alunos/7/matriculas (erro)
 
@@ -116,15 +117,15 @@ O app mobile quebra tentando fazer parse do JSON.
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
+   - Falso sucesso, retornando 200 OK mesmo quando o aluno não existe.
 
-   Falso sucesso, retornando 200 OK mesmo quando o aluno não existe.
-   Resposta em HTML de erro em uma API REST baseada em JSON, quebrando o parse do cliente.
-   Falta de padronização de respostas de erro, não utilizando ProblemDetails (RFC 9457) para erros.
+   - Resposta em HTML de erro em uma API REST baseada em JSON, quebrando o parse do cliente.
+
+   - Falta de padronização de respostas de erro, não utilizando ProblemDetails (RFC 9457) para erros.
 
 2. Seu redesenho (método + rota + status codes):
-
-   Método + Rota: GET /api/v1/alunos/7/matriculas
-   Status Codes: 200 OK com JSON da lista de matrículas se o aluno existir, 404 Not Found com ProblemDetails se o aluno não existir.
+   - Método + Rota: GET /api/v1/alunos/7/matriculas
+   - Status Codes: 200 OK com JSON da lista de matrículas se o aluno existir, 404 Not Found com ProblemDetails se o aluno não existir.
 
 ## ENDPOINT 06 — PUT /api/atualizarNotaParcial?aluno=7&disc=12&nota=8.5
 
@@ -138,16 +139,14 @@ Resposta: 200 OK + "OK".
 ```
 
 1. Qual(is) problema(s) de design vocês identificam?
-
-   Verbo HTTP incorreto, o uso de PUT para uma operação de atualização parcial. O correto seria PATCH.
-   Uso do termo /atualizarNotaParcial na rota, que é um verbo. A rota deve ser substantiva.
-   Valores que modificam estado devem ser enviados no corpo (body) em JSON, não na query string.
-   Retorna "OK" em texto simples, em vez do objeto atualizado ou status code apropriado.
+   - Verbo HTTP incorreto, o uso de PUT para uma operação de atualização parcial. O correto seria PATCH.
+   - Uso do termo /atualizarNotaParcial na rota, que é um verbo. A rota deve ser substantiva.
+   - Valores que modificam estado devem ser enviados no corpo (body) em JSON, não na query string.
+   - Retorna "OK" em texto simples, em vez do objeto atualizado ou status code apropriado.
 
 2. Seu redesenho (método + rota + status codes):
-
-   Método + Rota: PATCH /api/v1/matriculas/88/disciplinas/12 ou PATCH /api/v1/alunos/7/disciplinas/12
-   Status Codes: 200 OK com o JSON da disciplina atualizada, 404 Not Found com ProblemDetails se algum dos IDs não existir e 400 Bad Request caso a nota seja inválida.
+   - Método + Rota: PATCH /api/v1/matriculas/88/disciplinas/12 ou PATCH /api/v1/alunos/7/disciplinas/12
+   - Status Codes: 200 OK com o JSON da disciplina atualizada, 404 Not Found com ProblemDetails se algum dos IDs não existir e 400 Bad Request caso a nota seja inválida.
 
 ## DESAFIO
 
