@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "titulo": "Clean Architecture",
+    "autor": "Robert C. Martin",
+    "ano": 2017,
+    "disponivel": true
+  },
+  {
+    "id": 2,
+    "titulo": "Domain-Driven Design",
+    "autor": "Eric Evans",
+    "ano": 2003,
+    "disponivel": false
+  },
+  {
+    "id": 3,
+    "titulo": "Criando Microsserviços",
+    "autor": "Sam Newman",
+    "ano": 2022,
+    "disponivel": true
+  }
+]
