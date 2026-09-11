@@ -1,0 +1,117 @@
+{
+  "info": {
+    "_postman_id": "517446a8-423a-481e-b116-8d27cbfd4070",
+    "name": "BibliotecaApi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57998127"
+  },
+  "item": [
+    {
+      "name": "http://localhost:5268/api/livros/99",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5268/api/livros/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5268",
+          "path": [
+            "api",
+            "livros",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "http://localhost:5268/api/livros",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5268/api/livros",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5268",
+              "path": [
+                "api",
+                "livros"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 08 Sep 2026 02:40:39 GMT"
+            },
+            {
+              "key": "server",
+              "value": "Kestrel"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"titulo\": \"Clean Architecture\",\n    \"autor\": \"Robert C. Martin\",\n    \"ano\": 2017,\n    \"disponivel\": true\n  },\n  {\n    \"id\": 2,\n    \"titulo\": \"Domain-Driven Design\",\n    \"autor\": \"Eric Evans\",\n    \"ano\": 2003,\n    \"disponivel\": false\n  },\n  {\n    \"id\": 3,\n    \"titulo\": \"Criando Microsserviços\",\n    \"autor\": \"Sam Newman\",\n    \"ano\": 2022,\n    \"disponivel\": true\n  }\n]"
+        },
+        {
+          "name": "http://localhost:5268/api/livros/1",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5268/api/livros/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5268",
+              "path": [
+                "api",
+                "livros",
+                "1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 08 Sep 2026 02:42:02 GMT"
+            },
+            {
+              "key": "server",
+              "value": "Kestrel"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"titulo\": \"Clean Architecture\",\n  \"autor\": \"Robert C. Martin\",\n  \"ano\": 2017,\n  \"disponivel\": true\n}"
+        }
+      ]
+    }
+  ]
+}
