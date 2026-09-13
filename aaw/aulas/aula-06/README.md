@@ -136,3 +136,31 @@ A tela inicial do AppBanco mostra saldo, fatura do cartão, investimentos, empr�
    03 - MegaMarket (baixa de estoque)
    - Se a mensagem de evento "venda-criada" for processada duas vezes pelo serviço de Estoque, podemos acabar com uma baixa de estoque duplicada, resultando em inconsistência e possível venda de produto que não existe.
    - Para se proteger, o serviço de Estoque deve implementar idempotência, garantindo que a mesma operação (baixa de estoque para uma venda específica) não seja aplicada mais de uma vez. Isso pode ser feito, por exemplo, registrando o ID da venda processada e ignorando mensagens duplicadas com o mesmo ID.
+
+## FASE 5 — Laboratório LojaDev (Síncrono vs. Assíncrono)
+
+### Comparativo de Tempos de Resposta
+
+| Fluxo                                      | Tempo de Resposta | Notificação chega?                                             |
+| ------------------------------------------ | ----------------- | -------------------------------------------------------------- |
+| **Síncrono** (`/api/pedidos/sincrono`)     | ~4.180 ms         | Imediata, porém soma latências e bloqueia o cliente na tela    |
+| **Assíncrono** (`/api/pedidos/assincrono`) | ~1.040 ms         | Em background (desacoplada; cliente liberado com 202 Accepted) |
+
+---
+
+## Evidências Práticas de Execução (Payloads e Respostas)
+
+### 1. Fluxo Síncrono (`POST http://localhost:5090/api/pedidos/sincrono`)
+
+- **Status:** `200 OK`
+- **Latência Total:** `~4.180 ms` (soma de 1s de pagamento + 3s de notificação síncrona)
+
+**Payload enviado (Request):**
+
+```json
+{
+  "cliente": "Maria Silva",
+  "produto": "Notebook Dell",
+  "valor": 4500.0
+}
+```
