@@ -180,8 +180,7 @@ public class PedidosController : ControllerBase
 
         var urlPagamento = _config["ServicoPagamento"];
         var clientPagamento = _httpFactory.CreateClient();
-        var jsonPagamento = _httpFactory.Serialize(pedido);
-        var conteudoPagamento = new StringContent(json, Encoding.UTF8, "application/json");
+        
         var respostaPagamento = await client.PostAsync($"{urlPagamento}/api/pagamentos", conteudoPagamento);
         var corpoPagamento = await resposta.Content.ReadAsStringAsync();
         var resultadoPagamento = JsonSerializer.Deserialize<JsonElement>(corpoPagamento);
@@ -218,9 +217,9 @@ public class PedidosController : ControllerBase
 
         var evento = new EventoPedidoAprovado
         {
-            PedidoId = pedido.Id;
-            Cliente = pedido.Cliente;
-            Produto = pedido.Produto;
+            PedidoId = pedido.Id,
+            Cliente = pedido.Cliente,
+            Produto = pedido.Produto,
             Valor = valor.Valor
         };
         await _fila.PublicarAsync(evento);
