@@ -75,18 +75,13 @@ public class PedidosController : ControllerBase
         // ╚═══════════════════════════════════════════════════════╝
 
         var urlPagamento = _config["ServicoPagamento"];
-        // var client = ...
-        // var json = ...
-        // var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
-        // var resposta = await client.PostAsync(...)
-        // var corpo = await resposta.Content.ReadAsStringAsync();
-        // var resultado = JsonSerializer.Deserialize<JsonElement>(corpo);
-        // bool aprovado = resultado.GetProperty("aprovado").GetBoolean();
-
-        // ⬇⬇⬇ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 1 ⬇⬇⬇
-        Console.WriteLine("⚠️  TODO 1 não implementado — simulando pagamento aprovado");
-        bool aprovado = true;
-        // ⬆⬆⬆ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 1 ⬆⬆⬆
+        var clientPagamento = _httpFactory.CreateClient();
+        var jsonPagamento = _httpFactory.Serialize(pedido);
+        var conteudoPagamento = new StringContent(json, Encoding.UTF8, "application/json");
+        var respostaPagamento = await client.PostAsync($"{urlPagamento}/api/pagamentos", conteudoPagamento);
+        var corpoPagamento = await resposta.Content.ReadAsStringAsync();
+        var resultadoPagamento = JsonSerializer.Deserialize<JsonElement>(corpoPagamento);
+        bool aprovado = resultadoPagamento.GetProperty("aprovado").GetBoolean();
 
         if (!aprovado)
         {
@@ -118,15 +113,26 @@ public class PedidosController : ControllerBase
         // ╚═══════════════════════════════════════════════════════╝
 
         var urlNotificacao = _config["ServicoNotificacao"];
-        // var bodyNotificacao = new { ... };
-        // var jsonNotif = JsonSerializer.Serialize(bodyNotificacao);
-        // var conteudoNotif = new StringContent(jsonNotif, Encoding.UTF8, "application/json");
-        // var respostaNotif = await client.PostAsync(...)
-
-        // ⬇⬇⬇ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 2 ⬇⬇⬇
-        Console.WriteLine("⚠️  TODO 2 não implementado — simulando notificação");
-        string statusNotificacao = "simulado";
-        // ⬆⬆⬆ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 2 ⬆⬆⬆
+        var clienteNotifcacao = _httpFactory.CreateClient();
+        var bodyNotificacao = new 
+        {
+            destinatario = $"{pedido.Cliente.ToLower().Replace(" ", ".")}@email.com",
+            assunto = $"Pedido {pedido.Id} confirmado!",
+            corpo = $"Olá {pedido.Cliente}, seu pedido de {pedido.Produto} no valor de R$ {pedido.Valor:N2} foi aprovado."
+        };
+        var jsonNotif = JsonSerializer.Serialize(bodyNotificacao);
+        var conteudoNotif = new StringContent(jsonNotif, Encoding.UTF8, "application/json");
+        
+        string statusNotificacao;
+        try
+        {
+            var respostaNotif = await clienteNotifcacao.PostAsync($"{urlNotificacao}/api/notificacoes", conteudoNotif);
+            statusNotificacao = respostaNotif.IsSucessStatusCode ? "enviado com sucesso" : $"falha HTTP {(int)respostaNotif.StatusCode}";
+        }
+        catch (Exception ex)
+        {
+            statusNotificacao = $"erro de conexao: {ex.Message}";
+        }
 
         var tempoTotal = (DateTime.Now - inicioTotal).TotalMilliseconds;
         Console.WriteLine($"🛒 ═══ SÍNCRONO concluído em {tempoTotal:F0}ms ═══\n");
@@ -173,12 +179,13 @@ public class PedidosController : ControllerBase
         // ╚═══════════════════════════════════════════════════════╝
 
         var urlPagamento = _config["ServicoPagamento"];
-        // (mesma lógica do TODO 1)
-
-        // ⬇⬇⬇ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 3 ⬇⬇⬇
-        Console.WriteLine("⚠️  TODO 3 não implementado — simulando pagamento aprovado");
-        bool aprovado = true;
-        // ⬆⬆⬆ REMOVA ESTAS 2 LINHAS APÓS COMPLETAR O TODO 3 ⬆⬆⬆
+        var clientPagamento = _httpFactory.CreateClient();
+        var jsonPagamento = _httpFactory.Serialize(pedido);
+        var conteudoPagamento = new StringContent(json, Encoding.UTF8, "application/json");
+        var respostaPagamento = await client.PostAsync($"{urlPagamento}/api/pagamentos", conteudoPagamento);
+        var corpoPagamento = await resposta.Content.ReadAsStringAsync();
+        var resultadoPagamento = JsonSerializer.Deserialize<JsonElement>(corpoPagamento);
+        bool aprovado = resultadoPagamento.GetProperty("aprovado").GetBoolean();
 
         if (!aprovado)
         {
@@ -209,12 +216,15 @@ public class PedidosController : ControllerBase
         // ║  2. Use _fila.PublicarAsync(evento) para publicar    ║
         // ╚═══════════════════════════════════════════════════════╝
 
-        // var evento = new EventoPedidoAprovado { ... };
-        // await _fila.PublicarAsync(evento);
+        var evento = new EventoPedidoAprovado
+        {
+            PedidoId = pedido.Id;
+            Cliente = pedido.Cliente;
+            Produto = pedido.Produto;
+            Valor = valor.Valor
+        };
+        await _fila.PublicarAsync(evento);
 
-        // ⬇⬇⬇ REMOVA ESTA LINHA APÓS COMPLETAR O TODO 4 ⬇⬇⬇
-        Console.WriteLine("⚠️  TODO 4 não implementado — evento não publicado na fila");
-        // ⬆⬆⬆ REMOVA ESTA LINHA APÓS COMPLETAR O TODO 4 ⬆⬆⬆
 
         // ── Passo 3: Retornar resposta IMEDIATAMENTE ─────────────────
 
@@ -233,7 +243,7 @@ public class PedidosController : ControllerBase
         Console.WriteLine($"🛒 (notificação será processada em background)\n");
 
         // ⬇⬇⬇ TROQUE Ok() POR Accepted() APÓS COMPLETAR O TODO 5 ⬇⬇⬇
-        return Ok(new
+        return Accepted(new
         {
             pedidoId = pedido.Id,
             status = "aprovado",
