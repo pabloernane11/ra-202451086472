@@ -25,15 +25,18 @@ public class NotificacaoBackground : BackgroundService
     private readonly FilaDePedidos _fila;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IConfiguration _config;
+    private readonly ILogger<NotificacaoBackground> _logger;
 
     public NotificacaoBackground(
         FilaDePedidos fila,
         IHttpClientFactory httpFactory,
-        IConfiguration config)
+        IConfiguration config,
+        ILogger<NotificacaoBackground> logger)
     {
         _fila = fila;
         _httpFactory = httpFactory;
         _config = config;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,16 +54,11 @@ public class NotificacaoBackground : BackgroundService
         // ║  2. Chame o método ProcessarEvento (TODO 7)          ║
         // ╚═══════════════════════════════════════════════════════╝
 
-        // await foreach (var evento in _fila.ConsumirAsync(stoppingToken))
-        // {
-        //     Console.WriteLine($"📥 [BACKGROUND] Evento recebido — Pedido {evento.PedidoId}");
-        //     await ProcessarEvento(evento);
-        // }
-
-        // ⬇⬇⬇ REMOVA ESTE BLOCO APÓS COMPLETAR O TODO 6 ⬇⬇⬇
-        Console.WriteLine("⚠️  TODO 6 não implementado — background não consome a fila");
-        await Task.Delay(Timeout.Infinite, stoppingToken);
-        // ⬆⬆⬆ REMOVA ESTE BLOCO APÓS COMPLETAR O TODO 6 ⬆⬆⬆
+        await foreach (var evento in _fila.ConsumirAsync(stoppingToken))
+        {
+            Console.WriteLine($"📥 [BACKGROUND] Evento recebido — Pedido {evento.PedidoId}");
+            await ProcessarEvento(evento);
+        }
     }
 
     /// <summary>
@@ -82,31 +80,27 @@ public class NotificacaoBackground : BackgroundService
         // ║  se o NotificacaoApi falhar (lembre: 20% de falha!)  ║
         // ╚═══════════════════════════════════════════════════════╝
 
-        // try
-        // {
-        //     var urlNotificacao = _config["ServicoNotificacao"];
-        //     var client = _httpFactory.CreateClient();
-        //     var body = new
-        //     {
-        //         Destinatario = evento.Cliente,
-        //         Assunto = $"Pedido {evento.PedidoId} confirmado!",
-        //         Corpo = $"Seu pedido de {evento.Produto} (R$ {evento.Valor}) foi aprovado."
-        //     };
-        //     var json = JsonSerializer.Serialize(body);
-        //     var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
-        //     var resposta = await client.PostAsync($"{urlNotificacao}/api/notificacoes", conteudo);
-        //
-        //     Console.WriteLine(resposta.IsSuccessStatusCode
-        //         ? $"📥 ✅ [BACKGROUND] Notificação enviada — Pedido {evento.PedidoId}"
-        //         : $"📥 ⚠️ [BACKGROUND] Falha na notificação — Pedido {evento.PedidoId} (status {resposta.StatusCode})");
-        // }
-        // catch (Exception ex)
-        // {
-        //     Console.WriteLine($"📥 ❌ [BACKGROUND] Erro ao notificar — Pedido {evento.PedidoId}: {ex.Message}");
-        // }
-
-        // ⬇⬇⬇ REMOVA ESTA LINHA APÓS COMPLETAR O TODO 7 ⬇⬇⬇
-        Console.WriteLine($"⚠️  TODO 7 não implementado — evento {evento.PedidoId} não processado");
-        // ⬆⬆⬆ REMOVA ESTA LINHA APÓS COMPLETAR O TODO 7 ⬆⬆⬆
+        try
+        {
+            var urlNotificacao = _config["ServicoNotificacao"];
+            var client = _httpFactory.CreateClient();
+            var body = new
+            {
+                Destinatario = evento.Cliente,
+                Assunto = $"Pedido {evento.PedidoId} confirmado!",
+                Corpo = $"Seu pedido de {evento.Produto} (R$ {evento.Valor}) foi aprovado."
+            };
+            var json = JsonSerializer.Serialize(body);
+            var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
+            var resposta = await client.PostAsync($"{urlNotificacao}/api/notificacoes", conteudo);
+        
+            Console.WriteLine(resposta.IsSuccessStatusCode
+                ? $"📥 ✅ [BACKGROUND] Notificação enviada — Pedido {evento.PedidoId}"
+                : $"📥 ⚠️ [BACKGROUND] Falha na notificação — Pedido {evento.PedidoId} (status {resposta.StatusCode})");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"📥 ❌ [BACKGROUND] Erro ao notificar — Pedido {evento.PedidoId}: {ex.Message}");
+        }
     }
 }
