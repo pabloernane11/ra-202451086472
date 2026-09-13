@@ -31,9 +31,10 @@ No checkout do PagFácil, ao clicar em “Pagar”, o serviço de Pagamentos pre
 
 2. Desenhe o fluxo (caixas = serviços, setas = chamadas/mensagens):
 
-| Cliente chama POST /pagar no Serviço de Pagamentos |
-| Pagamentos chama GET /saldo no Serviço de Contas |
-| Contas responde: saldo OK ou recusado |
+| Cliente chama POST /pagar no Serviço de Pagamentos        |
+| --------------------------------------------------------- |
+| Pagamentos chama GET /saldo no Serviço de Contas          |
+| Contas responde: saldo OK ou recusado                     |
 | Pagamentos responde ao Cliente: 200 OK ou 400 Bad Request |
 
 3. Justificativa (mínimo 2 fatores):
@@ -57,10 +58,11 @@ Após criar a conta no CadastraJá, o sistema envia um e-mail de boas-vindas. O 
 
 2. Desenhe o fluxo (caixas = serviços, setas = chamadas/mensagens):
 
-| Cliente chama POST /cadastro no Serviço de Contas |
+| Cliente chama POST /cadastro no Serviço de Contas                    |
+| -------------------------------------------------------------------- |
 | Contas cria o registro e responde 201 Created de imediato ao Cliente |
-| Contas publica o evento "usuario-criado" na fila |
-| Serviço de E-mail consome o evento e chama o provedor de e-mail |
+| Contas publica o evento "usuario-criado" na fila                     |
+| Serviço de E-mail consome o evento e chama o provedor de e-mail      |
 
 3. Justificativa (mínimo 2 fatores):
    - Tolerância a atraso: alta. O enunciado deixa claro que um atraso de 1 minuto não afeta o usuário, então não faz sentido prender a tela de cadastro.
@@ -83,10 +85,11 @@ No marketplace MegaMarket, cada venda gera uma baixa no serviço de Estoque. Nas
 
 2. Desenhe o fluxo (caixas = serviços, setas = chamadas/mensagens):
 
-| Cliente chama POST /finalizar-compra no Serviço de Checkout |
+| Cliente chama POST /finalizar-compra no Serviço de Checkout                                                           |
+| --------------------------------------------------------------------------------------------------------------------- |
 | Checkout valida o pedido, publica o evento "venda-realizada" no broker persistente e responde 202 Accepted ao Cliente |
-| A fila persistente absorve o pico de tráfego |
-| Serviço de Estoque consome o evento no seu ritmo e atualiza o saldo do produto |
+| A fila persistente absorve o pico de tráfego                                                                          |
+| Serviço de Estoque consome o evento no seu ritmo e atualiza o saldo do produto                                        |
 
 3. Justificativa (mínimo 2 fatores):
    - Picos de tráfego: durante promoções, o serviço de Estoque não consegue processar todas as requisições em tempo real. A fila permite absorver o pico e processar no ritmo do Estoque.
@@ -109,9 +112,10 @@ A tela inicial do AppBanco mostra saldo, fatura do cartão, investimentos, empr�
 
 2. Desenhe o fluxo (caixas = serviços, setas = chamadas/mensagens):
 
-| App Mobile chama GET /home-mobile no BFF (uma única chamada consolidada) |
-| BFF faz chamadas aos 5 serviços e agrega os dados |
-| Cada serviço responde ao BFF no seu formato específico |
+| App Mobile chama GET /home-mobile no BFF (uma única chamada consolidada)                        |
+| ----------------------------------------------------------------------------------------------- |
+| BFF faz chamadas aos 5 serviços e agrega os dados                                               |
+| Cada serviço responde ao BFF no seu formato específico                                          |
 | BFF agrega os dados, filtra o que é relevante para celular e devolve um payload único otimizado |
 
 3. Justificativa (mínimo 2 fatores):
