@@ -228,7 +228,7 @@ _Preencham com base nos 6 cards. “Seguro” = não altera nada no servidor. �
 | **`GET`**    | Ler Recurso(s)     | Sim         | Sim              | 200, 404           |
 | **`POST`**   | Criar Recurso      | Não         | Não              | 201, 400           |
 | **`PUT`**    | Atualizar Recurso  | Não         | Sim              | 200, 404           |
-| **`PATCH`**  | Atualizar Parcial  | Não         | Depende          | 200, 404           |
+| **`PATCH`**  | Atualizar Parcial  | Não         | Sim              | 200, 404           |
 | **`DELETE`** | Remover Recurso    | Não         | Sim              | 204, 404           |
 
 ## DESAFIO
