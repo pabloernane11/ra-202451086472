@@ -1,17 +1,22 @@
 using ApiVazada.Data;
+using System.Security.Claims;
 using ApiVazada.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiVazada.Controllers;
 
+public record AtualizarUsuarioRequest(string Nome, string Email);
+
 [ApiController]
 [Route("api/[controller]")]
 public class UsuariosController : ControllerBase
 {
     private readonly AppDbContext _db;
-
     public UsuariosController(AppDbContext db) => _db = db;
+
+    private int UsuarioLogadoId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirst("id")?.Value ?? "0");
 
     [Authorize]
     [HttpGet("{id}")]
@@ -22,27 +27,25 @@ public class UsuariosController : ControllerBase
         return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Role });
     }
 
-    // ══════════════════════════════════════════════════════════════════
-    //  FALHA 4 (não corrija ainda!) — Mass Assignment
-    //  O método recebe a ENTIDADE inteira vinda do JSON. O cliente deveria
-    //  poder editar apenas nome e e-mail, mas qualquer campo do modelo
-    //  entra junto — inclusive Role e Senha.
-    //  Teste: PUT /api/usuarios/42 com o corpo
-    //         { "nome": "João", "email": "joao@loja.com", "role": "Admin" }
-    //         Faça login de novo e veja a role no token.
-    // ══════════════════════════════════════════════════════════════════
     [Authorize]
     [HttpPut("{id}")]
-    public IActionResult Atualizar(int id, [FromBody] Usuario dados)
+    public IActionResult Atualizar(int id, [FromBody] AtualizarUsuarioRequest dados)
     {
         var usuario = _db.Usuarios.Find(id);
         if (usuario is null) return NotFound();
 
+        if (usuario.Id != UsuarioLogadoId) return Forbid();
+
         usuario.Nome = dados.Nome;
         usuario.Email = dados.Email;
-        usuario.Role = dados.Role;
 
-        _db.SaveChanges();
-        return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Role });
+        //_db.SaveChanges();
+        return Ok(new
+        {
+            usuario.Id,
+            usuario.Nome,
+            usuario.Email,
+            usuario.Role
+        });
     }
 }
