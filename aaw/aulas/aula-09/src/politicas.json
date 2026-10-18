@@ -1,0 +1,25 @@
+{
+  "Politicas": {
+    "Regras": [
+      {
+        "Nome": "Obras raras só para pesquisa",
+        "Acao": "emprestar",
+        "Categoria": "ObraRara",
+        "Papeis": [
+          "Pesquisador",
+          "Bibliotecario"
+        ]
+      },
+      {
+        "Nome": "Empréstimo do acervo geral",
+        "Acao": "emprestar",
+        "Categoria": "*",
+        "Papeis": [
+          "Leitor",
+          "Pesquisador",
+          "Bibliotecario"
+        ]
+      }
+    ]
+  }
+}
