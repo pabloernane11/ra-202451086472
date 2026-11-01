@@ -13,7 +13,7 @@ Vocês receberam o contrato OpenAPI de uma API que NUNCA viram — e nada mais: 
 
 _⏱️ Tempo: 30 minutos | 👥 Formato: em duplas | Só vale usar o que está impresso neste handout._
 
-> **Nomes:** **Pablo Ernane******\_\_\_\_******** **Turma:** ********\_\_\_\_******** **Data:** \_24** / \_10** / **2026\_\_**
+> **Nomes:** _Pablo Ernane Oliveira Vieira_ **Turma:** _GNP0547 - 3001_ **Data:** _24 / 10 / 2026_
 
 ## CARD 01 — O contrato — especificação OpenAPI (YAML)
 
@@ -90,16 +90,20 @@ Respondam usando SOMENTE o Card 1:
 - O tipo de token HTTP do tipo Bearer, com formatação JWT.
 
 4. Montem a requisição POST completa no papel (método, URL, headers, body JSON válido):
+
+```
    POST https://api.biblioteca.newton.br/api/v1/livros HTTP/1.1
    Host: api.biblioteca.newton.br
    Content-Type: application/json
    Authorization: Bearer <token_jwt>
+
 
 {
 "titulo": "Vivendo como um guerreiro",
 "autor": "Whindersson Nunes",
 "ano": 2021
 }
+```
 
 ## CARD 03 — A mesma API, documentada “em prosa”
 
