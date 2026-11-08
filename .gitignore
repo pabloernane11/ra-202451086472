@@ -5,3 +5,9 @@
 *.suo
 .vs/
 .vscode/
+*.log
+*.db
+*.db-shm
+*.db-wal
+TestResults/
+~$*
