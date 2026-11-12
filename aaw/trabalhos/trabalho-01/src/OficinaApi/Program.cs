@@ -19,6 +19,8 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 // 2. Registro das Camadas (Injeção de Dependência)
 builder.Services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 builder.Services.AddScoped<VeiculoService>();
+builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+builder.Services.AddScoped<OrdemServicoService>();
 
 builder.Services.AddControllers();
 

@@ -6,10 +6,12 @@ namespace OficinaApi.Services;
 public class VeiculoService
 {
     private readonly IVeiculoRepository _repo;
+    private readonly IOrdemServicoRepository _osRepo;
 
-    public VeiculoService(IVeiculoRepository repo)
+    public VeiculoService(IVeiculoRepository repo, IOrdemServicoRepository osRepo)
     {
         _repo = repo;
+        _osRepo = osRepo;
     }
 
     public Task<List<Veiculo>> ListarTodosAsync() =>
@@ -40,6 +42,11 @@ public class VeiculoService
         return await _repo.AtualizarAsync(id, veiculo);
     }
 
-    public Task<bool> RemoverAsync(string id) =>
-        _repo.RemoverAsync(id);
+        public async Task<bool> RemoverAsync(string id)
+    {
+        if (await _osRepo.ExisteParaVeiculoAsync(id))
+            throw new InvalidOperationException("Não é possível remover um veículo que possui ordens de serviço vinculadas.");
+        
+        return await _repo.RemoverAsync(id);
+    }
 }

@@ -76,16 +76,24 @@ public class VeiculosController : ControllerBase
         }
     }
 
-    /// <summary>Remove um veículo pelo seu ID.</summary>
+    /// <summary>Remove um veículo pelo seu ID (se não possuir ordens de serviço).</summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Remover(string id)
     {
-        var removido = await _service.RemoverAsync(id);
-        if (!removido)
-            return NotFound(new { mensagem = $"Veículo com ID '{id}' não encontrado." });
+        try
+        {
+            var removido = await _service.RemoverAsync(id);
+            if (!removido)
+                return NotFound(new { mensagem = $"Veículo com ID '{id}' não encontrado." });
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
-}
+}    
