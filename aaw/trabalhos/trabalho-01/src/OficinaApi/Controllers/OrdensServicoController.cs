@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OficinaApi.Models;
 using OficinaApi.Services;
@@ -7,6 +8,8 @@ namespace OficinaApi.Controllers;
 [ApiController]
 [Route("api/v1/ordens-servico")]
 [Produces("application/json")]
+[Authorize]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class OrdensServicoController : ControllerBase
 {
     private readonly OrdemServicoService _service;
@@ -90,6 +93,8 @@ public class OrdensServicoController : ControllerBase
     }
 
     /// <summary>Remove uma ordem de serviço pelo seu ID.</summary>
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
