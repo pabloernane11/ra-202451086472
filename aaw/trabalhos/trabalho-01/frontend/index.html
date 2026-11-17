@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OficinaAPI — Painel de Gestão</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topo">
+        <div class="topo-conteudo">
+            <div>
+                <h1>Oficina Mecânica</h1>
+                <span class="subtitulo">Painel Web Assíncrono · OficinaAPI</span>
+            </div>
+            <div id="barra-superior" class="usuario-barra oculto">
+                <span id="usuario-logado" class="badge-usuario"></span>
+                <button id="btn-sair" type="button" class="btn btn-secundario">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="alerta" class="alerta oculto" role="alert"></div>
+
+        <!-- VISÃO 0: LOGIN / REGISTRO -->
+        <section id="visao-auth" class="card auth-card">
+            <h2 id="auth-titulo">Entrar no Sistema</h2>
+            <form id="form-auth">
+                <div id="grupo-nome" class="campo oculto">
+                    <label for="auth-nome">Nome completo</label>
+                    <input type="text" id="auth-nome" placeholder="Ex.: Carlos Mecânico">
+                </div>
+
+                <div class="campo">
+                    <label for="auth-email">E-mail</label>
+                    <input type="email" id="auth-email" required placeholder="seu@email.com">
+                </div>
+
+                <div class="campo">
+                    <label for="auth-senha">Senha</label>
+                    <input type="password" id="auth-senha" required minlength="6" placeholder="Mínimo 6 caracteres">
+                </div>
+
+                <div id="grupo-role" class="campo oculto">
+                    <label for="auth-role">Perfil (Role)</label>
+                    <select id="auth-role">
+                        <option value="mecanico">Mecânico (consulta, cria e edita)</option>
+                        <option value="admin">Administrador (acesso total + excluir)</option>
+                    </select>
+                </div>
+
+                <div class="acoes-form">
+                    <button id="btn-auth-enviar" type="submit" class="btn btn-primario">Entrar</button>
+                    <button id="btn-alternar-auth" type="button" class="btn btn-link">
+                        Não tem conta? Cadastre-se
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- VISÃO 1: LISTA DE VEÍCULOS -->
+        <section id="visao-lista" class="oculto">
+            <div class="cabecalho-secao">
+                <h2>Veículos Cadastrados</h2>
+                <div class="acoes-linha">
+                    <button id="btn-recarregar" type="button" class="btn btn-secundario">Atualizar</button>
+                    <button id="btn-novo-veiculo" type="button" class="btn btn-primario">+ Novo Veículo</button>
+                </div>
+            </div>
+
+            <div class="campo-busca">
+                <input type="text" id="filtro-busca" placeholder="Filtrar por placa, marca, modelo ou proprietário...">
+            </div>
+
+            <div id="lista-veiculos" class="grid-cards"></div>
+        </section>
+
+        <!-- VISÃO 2: DETALHE DO VEÍCULO + ORDENS DE SERVIÇO -->
+        <section id="visao-detalhe" class="oculto">
+            <button id="btn-voltar-lista" type="button" class="btn btn-secundario espaco-baixo">
+                ← Voltar para a Lista
+            </button>
+
+            <div id="detalhe-veiculo-card" class="card espaco-baixo"></div>
+
+            <div class="cabecalho-secao">
+                <h3>Ordens de Serviço deste Veículo</h3>
+                <button id="btn-nova-os" type="button" class="btn btn-primario">+ Nova Ordem de Serviço</button>
+            </div>
+
+            <div id="lista-ordens" class="lista-os"></div>
+        </section>
+
+        <!-- VISÃO 3A: FORMULÁRIO DE VEÍCULO (CRIAR / EDITAR) -->
+        <section id="visao-form-veiculo" class="card oculto">
+            <h2 id="titulo-form-veiculo">Novo Veículo</h2>
+            <form id="form-veiculo">
+                <input type="hidden" id="veiculo-id">
+
+                <div class="grid-form">
+                    <div class="campo">
+                        <label for="veiculo-placa">Placa</label>
+                        <input type="text" id="veiculo-placa" required placeholder="Ex.: ABC1D23">
+                    </div>
+                    <div class="campo">
+                        <label for="veiculo-ano">Ano (1950 a 2030)</label>
+                        <input type="number" id="veiculo-ano" required min="1950" max="2030" placeholder="2020">
+                    </div>
+                    <div class="campo">
+                        <label for="veiculo-marca">Marca</label>
+                        <input type="text" id="veiculo-marca" required placeholder="Ex.: Fiat">
+                    </div>
+                    <div class="campo">
+                        <label for="veiculo-modelo">Modelo</label>
+                        <input type="text" id="veiculo-modelo" required placeholder="Ex.: Uno">
+                    </div>
+                    <div class="campo">
+                        <label for="veiculo-proprietario">Proprietário</label>
+                        <input type="text" id="veiculo-proprietario" required placeholder="Ex.: Carlos Silva">
+                    </div>
+                    <div class="campo">
+                        <label for="veiculo-telefone">Telefone</label>
+                        <input type="text" id="veiculo-telefone" required placeholder="Ex.: 31999990000">
+                    </div>
+                </div>
+
+                <div class="acoes-form">
+                    <button type="submit" class="btn btn-primario">Salvar Veículo</button>
+                    <button id="btn-cancelar-veiculo" type="button" class="btn btn-secundario">Cancelar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- VISÃO 3B: FORMULÁRIO DE ORDEM DE SERVIÇO (CRIAR / EDITAR) -->
+        <section id="visao-form-os" class="card oculto">
+            <h2 id="titulo-form-os">Nova Ordem de Serviço</h2>
+            <p id="os-veiculo-info" class="info-destaque"></p>
+
+            <form id="form-os">
+                <input type="hidden" id="os-id">
+                <input type="hidden" id="os-veiculo-id">
+
+                <div class="campo">
+                    <label for="os-descricao">Descrição do Problema / Serviço</label>
+                    <textarea id="os-descricao" rows="3" required
+                        placeholder="Ex.: Troca de pastilha de freio"></textarea>
+                </div>
+
+                <div class="grid-form">
+                    <div class="campo">
+                        <label for="os-pecas">Valor das Peças (R$)</label>
+                        <input type="number" id="os-pecas" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="campo">
+                        <label for="os-mao-obra">Valor da Mão de Obra (R$)</label>
+                        <input type="number" id="os-mao-obra" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div id="grupo-os-status" class="campo oculto">
+                    <label for="os-status">Status da Ordem</label>
+                    <select id="os-status">
+                        <option value="Aberta">Aberta</option>
+                        <option value="EmAndamento">Em Andamento</option>
+                        <option value="Concluida">Concluída</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
+                </div>
+
+                <p class="dica-regra">* O valor total é calculado automaticamente no servidor.</p>
+
+                <div class="acoes-form">
+                    <button type="submit" class="btn btn-primario">Salvar Ordem de Serviço</button>
+                    <button id="btn-cancelar-os" type="button" class="btn btn-secundario">Cancelar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

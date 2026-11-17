@@ -64,6 +64,13 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontend", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
 
 // 4. Configuração do Swagger / OpenAPI (com botão Authorize para JWT)
 builder.Services.AddEndpointsApiExplorer();
@@ -112,6 +119,7 @@ app.UseSwaggerUI(options =>
 });
 
 app.UseHttpsRedirection();
+app.UseCors("PermitirFrontend");
 app.UseAuthentication(); // 1º: valida o token JWT ("quem é você?" -> 401)
 app.UseAuthorization();  // 2º: valida a role/permissão ("o que pode fazer?" -> 403)
 app.MapControllers();
