@@ -15,3 +15,9 @@ Estrutura da pasta:
 
 - `aulas/` — exercícios práticos realizados em aula
 - `trabalhos/` — trabalhos e entregas avaliativas
+
+
+## Trabalho Semestral — OficinaAPI
+
+O projeto semestral da disciplina está em [`aaw/trabalhos/trabalho-01/`](aaw/trabalhos/trabalho-01/).  
+Consulte o guia completo para rodar localmente (API, variáveis de ambiente, Swagger, Frontend e `dotnet test`) no [README do trabalho](aaw/trabalhos/trabalho-01/README.md).
