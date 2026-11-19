@@ -113,6 +113,6 @@ Serão executados **7 testes unitários (xUnit)** cobrindo cenários de sucesso 
 ---
 
 ## Uso de IA
-- Ferramentas usadas: Antigravity (assistente de IA no editor) como apoio de estudo e arquitetura.
-- Onde ajudou: estruturou os templates iniciais da configuração JWT/CORS no `Program.cs`, do painel web assíncrono em HTML/CSS/JS e dos testes unitários com repositórios Fake em xUnit.
-- O que eu revisei/reescrevi: configurei o banco e variáveis de ambiente no MongoDB Atlas, validei manualmente todos os fluxos de status HTTP (`200`, `201`, `204`, `400`, `401`, `403`, `404`), ajustei a exibição amigável de status e erros sem expor códigos técnicos ao usuário final, e substituí `localStorage` por `sessionStorage` para isolar sessões entre abas.
+- **Ferramentas usadas:** Google Antigravity (IDE com assistente de IA / Gemini) durante o desenvolvimento e estudo do projeto.
+- **Onde ajudou:** gerou a estrutura inicial das classes e arquivos da API (`Models`, `Data`, `Services`, `Controllers`, configuração JWT/CORS no `Program.cs`), do painel web assíncrono em `frontend/` e da suíte de testes unitários em `xUnit`, explicando passo a passo o papel de cada camada.
+- **O que eu revisei/reescrevi:** defini o domínio e as regras de negócio na proposta, configurei o cluster e as variáveis de ambiente no MongoDB Atlas, validei todos os fluxos no Swagger e no Frontend (`200`, `201`, `204`, `400`, `401`, `403`, `404`), identifiquei e corrigi melhorias de UX e sessão (formatação de status, mensagens de erro amigáveis sem códigos HTTP crus para o usuário final e troca de `localStorage` por `sessionStorage` para isolar abas) e revisei cada camada para a arguição oral.
